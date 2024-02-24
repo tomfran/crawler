@@ -5,10 +5,10 @@ clippy:
 	cargo clippy --verbose
 
 build: 
-	cargo build --release
+	cargo build
 
 run: 
 	cargo run --release
 
 test: 
-	cargo test --release
+	cargo test
