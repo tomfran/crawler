@@ -90,23 +90,3 @@ impl Fetcher {
         simhash(&strip, SIMHASH_SHINGLE_SIZE)
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use crate::simhash::hamming_distance;
-
-    use super::*;
-
-    #[test]
-    pub fn test() {
-        let f = Fetcher::new();
-
-        // same article on two websites
-        let w1 = f
-            .fetch("https://itnext.io/log-structured-merge-tree-a79241c959e3")
-            .unwrap();
-        let w2 = f.fetch("https://tomfran.github.io/posts/lsm/").unwrap();
-
-        assert!(hamming_distance(w1.digest, w2.digest) < 5);
-    }
-}
