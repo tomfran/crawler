@@ -1,5 +1,3 @@
-use std::io::Seek;
-
 use html5ever::tree_builder::TreeSink;
 use regex::Regex;
 use reqwest::blocking::get;
@@ -89,7 +87,7 @@ impl Fetcher {
         // remove consecutive spaces
         strip = self.multiple_space_re.replace_all(&strip, " ").to_string();
 
-        simhash(strip, SIMHASH_SHINGLE_SIZE)
+        simhash(&strip, SIMHASH_SHINGLE_SIZE)
     }
 }
 

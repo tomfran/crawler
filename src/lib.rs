@@ -1,3 +1,3 @@
-mod bloom;
-mod fetch;
-mod simhash;
+pub mod bloom;
+pub mod fetch;
+pub mod simhash;

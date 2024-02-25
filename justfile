@@ -12,3 +12,6 @@ run:
 
 test: 
 	cargo test -- --test-threads=3
+
+bench: 
+	cargo bench

@@ -1,6 +1,6 @@
 use fastmurmur3::hash;
 
-pub fn simhash(s: String, shingle_size: usize) -> u128 {
+pub fn simhash(s: &String, shingle_size: usize) -> u128 {
     let n = s.len();
     let s = s.to_lowercase();
 
@@ -38,17 +38,20 @@ mod tests {
 
     #[test]
     pub fn test_equal() {
-        let s1 = simhash("hello world".to_string(), 3);
-        let s2 = simhash("hello world".to_string(), 3);
+        let s1 = simhash(&"hello world".to_string(), 3);
+        let s2 = simhash(&"hello world".to_string(), 3);
 
         assert_eq!(s1, s2);
     }
 
     #[test]
     pub fn test_different() {
-        let s1 = simhash("the quick brown fox jumps over the lazy dog".to_string(), 3);
+        let s1 = simhash(
+            &"the quick brown fox jumps over the lazy dog".to_string(),
+            3,
+        );
         let s2 = simhash(
-            "the quick brown fox jumps over the lazy doggg".to_string(),
+            &"the quick brown fox jumps over the lazy doggg".to_string(),
             3,
         );
 
