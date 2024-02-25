@@ -28,18 +28,8 @@ pub fn simhash(s: String, shingle_size: usize) -> u128 {
     res
 }
 
-pub fn hamming_distance(x: u128, y: u128) -> usize {
-    let mut res = 0;
-
-    for i in 0..128 {
-        let mask = 1 << i;
-
-        if (x & mask) != (y & mask) {
-            res += 1;
-        }
-    }
-
-    res
+pub fn hamming_distance(x: u128, y: u128) -> u32 {
+    (x ^ y).count_ones()
 }
 
 #[cfg(test)]
@@ -63,5 +53,13 @@ mod tests {
         );
 
         assert!(hamming_distance(s1, s2) < 10);
+    }
+
+    #[test]
+    pub fn test_hamming() {
+        let x = (1 << 10) - 1;
+        let y = (1 << 5) - 1;
+
+        assert_eq!(hamming_distance(x, y), 5);
     }
 }
