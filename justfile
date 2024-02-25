@@ -11,4 +11,4 @@ run:
 	cargo run --release
 
 test: 
-	cargo test
+	cargo test -- --test-threads=3

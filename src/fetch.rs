@@ -44,7 +44,7 @@ impl Fetcher {
 
         let url = url.to_string();
 
-        let links = document
+        let mut links: Vec<_> = document
             .select(&self.a_sel)
             .filter_map(|e| e.value().attr("href"))
             .map(str::to_string)
@@ -56,6 +56,7 @@ impl Fetcher {
                 }
             })
             .collect();
+        links.dedup();
 
         let raw_content = document.html();
         let digest = self.compute_digest(document);
@@ -109,5 +110,9 @@ mod tests {
         let w2 = f.fetch("https://tomfran.github.io/posts/lsm/").unwrap();
 
         assert!(hamming_distance(w1.digest, w2.digest) < 5);
+
+        for l in w2.links {
+            println!("{}", l);
+        }
     }
 }
