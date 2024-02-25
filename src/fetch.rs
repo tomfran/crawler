@@ -108,9 +108,5 @@ mod tests {
         let w2 = f.fetch("https://tomfran.github.io/posts/lsm/").unwrap();
 
         assert!(hamming_distance(w1.digest, w2.digest) < 5);
-
-        for l in w2.links {
-            println!("{}", l);
-        }
     }
 }
