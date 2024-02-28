@@ -2,20 +2,20 @@ use std::collections::VecDeque;
 
 use crate::bloom::BloomFilter;
 
-struct Sieve {
+pub struct Sieve {
     filter: BloomFilter,
     urls: VecDeque<String>,
 }
 
 impl Sieve {
-    fn new(expected_urls_num: usize) -> Sieve {
+    pub fn new(expected_urls_num: usize) -> Sieve {
         Sieve {
             filter: BloomFilter::new(expected_urls_num, 0.01),
             urls: VecDeque::new(),
         }
     }
 
-    fn push(&mut self, url: String) {
+    pub fn push(&mut self, url: String) {
         let url_bytes = url.as_bytes();
 
         if self.filter.contains(url_bytes) {
@@ -26,7 +26,7 @@ impl Sieve {
         self.urls.push_back(url);
     }
 
-    fn pop(&mut self) -> Option<String> {
+    pub fn pop(&mut self) -> Option<String> {
         self.urls.pop_front()
     }
 }

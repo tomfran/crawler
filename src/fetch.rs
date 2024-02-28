@@ -23,8 +23,8 @@ pub struct Fetcher {
     multiple_space_re: Regex,
 }
 
-impl Fetcher {
-    fn new() -> Fetcher {
+impl Default for Fetcher {
+    fn default() -> Self {
         Fetcher {
             scripts_sel: Selector::parse("script").unwrap(),
             style_sel: Selector::parse("style").unwrap(),
@@ -33,7 +33,9 @@ impl Fetcher {
             multiple_space_re: Regex::new(r"\s+").unwrap(),
         }
     }
+}
 
+impl Fetcher {
     pub fn fetch(&self, url: &str) -> Option<Webpage> {
         let response = get(url).ok()?;
         let body = response.text().ok()?;
@@ -53,7 +55,10 @@ impl Fetcher {
                     url.clone() + &s
                 }
             })
+            .map(|s| s.trim().to_string())
+            .filter(|s| !s.is_empty())
             .collect();
+
         links.dedup();
 
         let raw_content = document.html();

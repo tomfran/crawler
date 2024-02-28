@@ -63,7 +63,7 @@ mod tests {
 
     #[test]
     pub fn test_precision() {
-        let n = 100;
+        let n = 100_000;
         let p = 0.1;
         let mut b = BloomFilter::new(n, p);
 
@@ -71,7 +71,7 @@ mod tests {
             b.add(&(i as u32).to_be_bytes());
         }
 
-        let m = 1_000_000;
+        let m = 100_000;
         let mut positive_count = 0;
         for i in n..n + m {
             positive_count += if b.contains(&(i as u32).to_be_bytes()) {

@@ -1,12 +1,15 @@
 use fastmurmur3::hash;
+use log::debug;
 
 pub fn simhash(s: &String, shingle_size: usize) -> u128 {
     let n = s.len();
-    let s = s.to_lowercase();
+    if n < (shingle_size + 1) {
+        return 0;
+    }
 
+    let s = s.to_lowercase().clone();
     let mut counts = [0; 128];
 
-    // for each shingle_size-gram, compute a 128 bit hash
     for i in 0..(n - shingle_size + 1) {
         let gram = &s[i..i + shingle_size];
 
