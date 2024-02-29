@@ -1,11 +1,12 @@
 use html5ever::tree_builder::TreeSink;
 use regex::Regex;
-use reqwest::blocking::get;
+use reqwest::blocking::{Client, ClientBuilder};
 use scraper::{Html, Selector};
 
 use crate::simhash::simhash;
 
 const SIMHASH_SHINGLE_SIZE: usize = 3;
+static APP_USER_AGENT: &str = "https://github.com/tomfran/crawler";
 
 #[derive(Debug)]
 pub struct Webpage {
@@ -16,6 +17,7 @@ pub struct Webpage {
 }
 
 pub struct Fetcher {
+    client: Client,
     scripts_sel: Selector,
     style_sel: Selector,
     a_sel: Selector,
@@ -25,7 +27,12 @@ pub struct Fetcher {
 
 impl Default for Fetcher {
     fn default() -> Self {
+        println!("{}", APP_USER_AGENT);
         Fetcher {
+            client: ClientBuilder::new()
+                .user_agent(APP_USER_AGENT)
+                .build()
+                .unwrap(),
             scripts_sel: Selector::parse("script").unwrap(),
             style_sel: Selector::parse("style").unwrap(),
             a_sel: Selector::parse("a").unwrap(),
@@ -37,7 +44,7 @@ impl Default for Fetcher {
 
 impl Fetcher {
     pub fn fetch(&self, url: &str) -> Option<Webpage> {
-        let response = get(url).ok()?;
+        let response = self.client.get(url).send().ok()?;
         let body = response.text().ok()?;
 
         let document = Html::parse_document(&body);

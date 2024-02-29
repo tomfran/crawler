@@ -1,5 +1,4 @@
 use fastmurmur3::hash;
-use log::debug;
 
 pub fn simhash(s: &String, shingle_size: usize) -> u128 {
     let n = s.len();

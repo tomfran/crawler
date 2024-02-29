@@ -6,7 +6,7 @@ fn main() {
 
     info!("Crawler - Start");
 
-    let c = Crawler::new(1, 1000);
-    c.set_seed(vec!["https://en.wikipedia.org/wiki/Main_Page".to_string()]);
+    let c = Crawler::new(1, 10_000_000);
+    c.set_seed(vec!["https://github.com/tomfran/LSM-Tree".to_string()]);
     c.start();
 }

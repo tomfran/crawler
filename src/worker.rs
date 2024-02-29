@@ -24,7 +24,7 @@ impl Worker {
         let initial_sleep_time = time::Duration::from_millis(10);
         let mut current_sleep_time = initial_sleep_time;
 
-        for _ in 0..100 {
+        for _ in 0..100_000 {
             let url = self.get_url();
 
             match url {

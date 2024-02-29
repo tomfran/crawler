@@ -7,11 +7,11 @@ clippy:
 build: 
 	cargo build
 
-run: 
-	cargo run --release
-
 test: 
 	cargo test -- --test-threads=3
 
 bench: 
 	cargo bench
+
+run:
+    RUST_LOG=none,crawler=debug cargo run --release
