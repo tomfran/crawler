@@ -1,4 +1,4 @@
-use crawler::simhash::simhash;
+use crawler::worker::simhash::simhash;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use rand::{distributions::Alphanumeric, Rng};
 

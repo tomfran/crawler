@@ -1,9 +1,9 @@
+use crate::url_utils;
+use crate::worker::simhash::simhash;
 use html5ever::tree_builder::TreeSink;
 use regex::Regex;
 use reqwest::blocking::{Client, ClientBuilder};
 use scraper::{Html, Selector};
-
-use crate::simhash::simhash;
 
 const SIMHASH_SHINGLE_SIZE: usize = 3;
 static APP_USER_AGENT: &str = "https://github.com/tomfran/crawler";
@@ -27,7 +27,6 @@ pub struct Fetcher {
 
 impl Default for Fetcher {
     fn default() -> Self {
-        println!("{}", APP_USER_AGENT);
         Fetcher {
             client: ClientBuilder::new()
                 .user_agent(APP_USER_AGENT)
@@ -51,22 +50,7 @@ impl Fetcher {
 
         let url = url.to_string();
 
-        let mut links: Vec<_> = document
-            .select(&self.a_sel)
-            .filter_map(|e| e.value().attr("href"))
-            .map(str::to_string)
-            .map(|s| {
-                if s.starts_with("http") {
-                    s
-                } else {
-                    url.clone() + &s
-                }
-            })
-            .map(|s| s.trim().to_string())
-            .filter(|s| !s.is_empty())
-            .collect();
-
-        links.dedup();
+        let links = self.extract_links(&url, &document);
 
         let raw_content = document.html();
         let digest = self.compute_digest(document);
@@ -77,6 +61,27 @@ impl Fetcher {
             digest,
             links,
         })
+    }
+
+    fn extract_links(&self, url: &str, document: &Html) -> Vec<String> {
+        let mut links: Vec<_> = document
+            .select(&self.a_sel)
+            .filter_map(|e| e.value().attr("href"))
+            .map(str::to_string)
+            .map(|s| {
+                if s.starts_with("http") {
+                    s
+                } else {
+                    url.to_owned() + &s
+                }
+            })
+            .filter_map(|s| url_utils::clean_url(&s))
+            .filter(|s| !s.is_empty())
+            .collect();
+
+        links.dedup();
+
+        links
     }
 
     fn compute_digest(&self, mut document: Html) -> u128 {

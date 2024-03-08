@@ -9,7 +9,7 @@ pub fn simhash(s: &String, shingle_size: usize) -> u128 {
     let s = s.to_lowercase().clone();
     let mut counts = [0; 128];
 
-    for i in 0..(n - shingle_size + 1) {
+    for i in 0..=(n - shingle_size) {
         let gram = &s[i..i + shingle_size];
 
         let h = hash(gram.as_bytes());

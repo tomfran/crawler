@@ -1,16 +1,18 @@
+pub mod bloom;
+
+use self::bloom::Filter;
 use std::collections::VecDeque;
 
-use crate::bloom::BloomFilter;
-
+#[derive(Default)]
 pub struct Sieve {
-    filter: BloomFilter,
+    filter: Filter,
     urls: VecDeque<String>,
 }
 
 impl Sieve {
     pub fn new(expected_urls_num: usize) -> Sieve {
         Sieve {
-            filter: BloomFilter::new(expected_urls_num, 0.01),
+            filter: Filter::new(expected_urls_num, 0.01),
             urls: VecDeque::new(),
         }
     }

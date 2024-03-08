@@ -1,8 +1,8 @@
-use crawler::bloom::BloomFilter;
+use crawler::sieve::bloom::Filter;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn bloom_add_bench(c: &mut Criterion) {
-    let mut bloom = BloomFilter::new(1_000_000, 0.01);
+    let mut bloom = Filter::new(1_000_000, 0.01);
     for i in 0..1_000_000 {
         bloom.add(&(i as u32).to_be_bytes());
     }
@@ -14,7 +14,7 @@ fn bloom_add_bench(c: &mut Criterion) {
 }
 
 fn bloom_contains_bench(c: &mut Criterion) {
-    let mut bloom = BloomFilter::new(1_000_000, 0.01);
+    let mut bloom = Filter::new(1_000_000, 0.01);
     for i in 0..1_000_000 {
         bloom.add(&(i as u32).to_be_bytes());
     }

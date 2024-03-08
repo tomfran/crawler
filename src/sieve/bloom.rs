@@ -1,11 +1,17 @@
-pub struct BloomFilter {
+pub struct Filter {
     size: usize,
     d: u32,
     bits: Vec<u128>,
 }
 
-impl BloomFilter {
-    pub fn new(n: usize, p: f64) -> BloomFilter {
+impl Default for Filter {
+    fn default() -> Self {
+        Self::new(1_000_000, 0.01)
+    }
+}
+
+impl Filter {
+    pub fn new(n: usize, p: f64) -> Filter {
         let log_2 = 2_f64.ln();
         let log_p = p.ln();
 
@@ -13,7 +19,7 @@ impl BloomFilter {
         let d = (-log_p / log_2).ceil() as u32;
         let bits = vec![0; (size as f64 / 128.0).ceil() as usize];
 
-        BloomFilter { size, d, bits }
+        Filter { size, d, bits }
     }
 
     pub fn add(&mut self, data: &[u8]) {
@@ -50,7 +56,7 @@ mod tests {
 
     #[test]
     pub fn test_add_contains() {
-        let mut b = BloomFilter::new(100, 0.001);
+        let mut b = Filter::new(100, 0.001);
 
         let el = &10_u32.to_be_bytes();
 
@@ -65,7 +71,7 @@ mod tests {
     pub fn test_precision() {
         let n = 100_000;
         let p = 0.1;
-        let mut b = BloomFilter::new(n, p);
+        let mut b = Filter::new(n, p);
 
         for i in 0..n {
             b.add(&(i as u32).to_be_bytes());
