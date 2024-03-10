@@ -4,7 +4,7 @@ use std::{
     time::{Duration, SystemTime},
 };
 
-const POLITENESS_DELAY: Duration = Duration::from_millis(500);
+const POLITENESS_DELAY: Duration = Duration::from_millis(200);
 
 #[derive(Eq, Debug)]
 pub struct DomainTimestampPair {
@@ -75,6 +75,8 @@ impl DomainPriorityQueue {
 
 #[cfg(test)]
 mod tests {
+    use std::thread;
+
     use super::*;
 
     #[test]
@@ -82,6 +84,7 @@ mod tests {
         let mut queue = DomainPriorityQueue::default();
 
         let now = SystemTime::now();
+        thread::sleep(Duration::from_millis(10));
         queue.add_domain("first".to_string());
         queue.add_domain("second".to_string());
 

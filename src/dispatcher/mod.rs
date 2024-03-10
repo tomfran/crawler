@@ -12,7 +12,7 @@ use std::{
     time::Duration,
 };
 
-const INITIAL_SLEEP_TIME: Duration = Duration::from_millis(10);
+const INITIAL_SLEEP_TIME: Duration = Duration::from_millis(500);
 
 #[derive(Default)]
 pub struct Dispatcher {
@@ -54,7 +54,7 @@ impl Dispatcher {
             } else {
                 debug!(
                     "[Dispatcher] - Empty Sieve, sleeping for {} ms",
-                    current_sleep_time.as_millis()
+                    current_sleep_time.as_millis(),
                 );
                 thread::sleep(current_sleep_time);
                 current_sleep_time *= 2;

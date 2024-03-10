@@ -43,6 +43,16 @@ impl Filter {
         true
     }
 
+    pub fn estimated_size(&self) -> usize {
+        let mut ones = 0;
+        for b in &self.bits {
+            ones += b.count_ones();
+        }
+
+        (-(self.size as f64 / self.d as f64) * (1f64 - ones as f64 / self.size as f64).ln())
+            as usize
+    }
+
     fn hash(data: &[u8]) -> (u64, u64) {
         let h = fastmurmur3::hash(data);
         let mask: u128 = (1 << 64) - 1;

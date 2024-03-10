@@ -1,12 +1,15 @@
+use std::collections::HashSet;
+
 use crate::url_utils;
 use crate::worker::simhash::simhash;
 use html5ever::tree_builder::TreeSink;
+use log::error;
 use regex::Regex;
 use reqwest::blocking::{Client, ClientBuilder};
 use scraper::{Html, Selector};
 
 const SIMHASH_SHINGLE_SIZE: usize = 3;
-static APP_USER_AGENT: &str = "https://github.com/tomfran/crawler";
+static APP_USER_AGENT: &str = "tomfran/crawler";
 
 #[derive(Debug)]
 pub struct Webpage {
@@ -43,8 +46,21 @@ impl Default for Fetcher {
 
 impl Fetcher {
     pub fn fetch(&self, url: &str) -> Option<Webpage> {
-        let response = self.client.get(url).send().ok()?;
-        let body = response.text().ok()?;
+        let response = match self.client.get(url).send() {
+            Ok(response) => response,
+            Err(err) => {
+                error!("Failed to fetch {}: {}", url, err);
+                return None;
+            }
+        };
+
+        let body = match response.text() {
+            Ok(body) => body,
+            Err(err) => {
+                error!("Failed to read response body for {}: {}", url, err);
+                return None;
+            }
+        };
 
         let document = Html::parse_document(&body);
 
@@ -64,7 +80,7 @@ impl Fetcher {
     }
 
     fn extract_links(&self, url: &str, document: &Html) -> Vec<String> {
-        let mut links: Vec<_> = document
+        let links: HashSet<_> = document
             .select(&self.a_sel)
             .filter_map(|e| e.value().attr("href"))
             .map(str::to_string)
@@ -79,9 +95,7 @@ impl Fetcher {
             .filter(|s| !s.is_empty())
             .collect();
 
-        links.dedup();
-
-        links
+        links.into_iter().collect()
     }
 
     fn compute_digest(&self, mut document: Html) -> u128 {
