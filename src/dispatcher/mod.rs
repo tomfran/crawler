@@ -2,9 +2,7 @@ mod domain_map;
 mod domain_priority_queue;
 
 use self::{domain_map::DomainUrlsMap, domain_priority_queue::DomainPriorityQueue};
-use crate::{
-    dispatcher::domain_priority_queue::DomainTimestampPair, sieve::Sieve, url_utils::extract_domain,
-};
+use crate::{sieve::Sieve, url_utils::extract_domain};
 use log::debug;
 use std::{
     sync::{Arc, Mutex},
@@ -32,15 +30,22 @@ impl Dispatcher {
 
     pub fn get_next_url(&self) -> Option<String> {
         let mut queue = self.queue.lock().unwrap();
-        let mut head = queue.pop().filter(DomainTimestampPair::is_visitable)?;
+        queue.peek().filter(|f| f.is_visitable())?;
+
+        let mut head = queue.pop()?;
+        let domain = head.get_domain();
 
         let mut map = self.map.lock().unwrap();
-        let url = map.get_next_url(&head.get_domain())?;
+        let res = map.get_next_url(&domain);
 
-        head.set_next_visit_timestamp();
-        queue.add_pair(head);
+        if res.is_none() {
+            map.remove(&domain);
+        } else {
+            head.set_next_visit_timestamp();
+            queue.add_pair(head);
+        }
 
-        Some(url)
+        res
     }
 
     pub fn sieve_to_heap_loop(&self) {

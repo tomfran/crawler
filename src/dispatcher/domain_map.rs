@@ -20,6 +20,10 @@ impl DomainUrlsMap {
     pub fn get_next_url(&mut self, base_domain: &str) -> Option<String> {
         self.map.get_mut(base_domain).and_then(VecDeque::pop_front)
     }
+
+    pub fn remove(&mut self, base_domain: &str) {
+        self.map.remove(base_domain);
+    }
 }
 
 #[cfg(test)]

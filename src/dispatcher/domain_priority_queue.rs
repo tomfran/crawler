@@ -68,6 +68,10 @@ impl DomainPriorityQueue {
         self.heap.push(element);
     }
 
+    pub fn peek(&mut self) -> Option<&DomainTimestampPair> {
+        self.heap.peek()
+    }
+
     pub fn pop(&mut self) -> Option<DomainTimestampPair> {
         self.heap.pop()
     }
