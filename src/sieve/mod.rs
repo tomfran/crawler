@@ -1,12 +1,14 @@
 pub mod bloom;
 
+use log::warn;
+
 use self::bloom::Filter;
 use std::collections::VecDeque;
 
-#[derive(Default)]
 pub struct Sieve {
     filter: Filter,
     urls: VecDeque<String>,
+    expected_size: usize,
 }
 
 impl Sieve {
@@ -14,6 +16,7 @@ impl Sieve {
         Sieve {
             filter: Filter::new(expected_urls_num, 0.01),
             urls: VecDeque::new(),
+            expected_size: expected_urls_num,
         }
     }
 
@@ -26,6 +29,14 @@ impl Sieve {
 
         self.filter.add(url_bytes);
         self.urls.push_back(url);
+
+        let filter_size = self.filter.estimated_size();
+        if filter_size >= self.expected_size {
+            warn!(
+                "Filter size ({}) exceeded sieve expected size ({})",
+                filter_size, self.expected_size
+            );
+        }
     }
 
     pub fn pop(&mut self) -> Option<String> {

@@ -1,3 +1,6 @@
+clean: 
+	cargo clean
+
 fmt: 
 	cargo fmt --check
 
@@ -11,7 +14,5 @@ test:
 	cargo test -- --test-threads=3
 
 run:
-	RUST_LOG=none,crawler=debug cargo run --release
+	cargo run --release 
 	
-run-info:
-	RUST_LOG=none,crawler=info cargo run --release

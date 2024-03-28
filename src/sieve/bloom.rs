@@ -2,6 +2,7 @@ pub struct Filter {
     size: usize,
     d: u32,
     bits: Vec<u128>,
+    set_bits: u32,
 }
 
 impl Default for Filter {
@@ -18,8 +19,14 @@ impl Filter {
         let size = ((-(n as f64) * log_p) / (log_2 * log_2)) as usize;
         let d = (-log_p / log_2).ceil() as u32;
         let bits = vec![0; (size as f64 / 128.0).ceil() as usize];
+        let set_bits = 0;
 
-        Filter { size, d, bits }
+        Filter {
+            size,
+            d,
+            bits,
+            set_bits,
+        }
     }
 
     pub fn add(&mut self, data: &[u8]) {
@@ -27,7 +34,9 @@ impl Filter {
 
         for i in 0..self.d {
             let bit = (h1 as u128 + h2 as u128 * i as u128) as usize % self.size;
+            self.set_bits -= self.bits[bit / 128].count_ones();
             self.bits[bit / 128] |= 1 << (bit % 128);
+            self.set_bits += self.bits[bit / 128].count_ones();
         }
     }
 
@@ -44,13 +53,8 @@ impl Filter {
     }
 
     pub fn estimated_size(&self) -> usize {
-        let mut ones = 0;
-        for b in &self.bits {
-            ones += b.count_ones();
-        }
-
-        (-(self.size as f64 / self.d as f64) * (1f64 - ones as f64 / self.size as f64).ln())
-            as usize
+        (-(self.size as f64 / self.d as f64)
+            * (1f64 - self.set_bits as f64 / self.size as f64).ln()) as usize
     }
 
     fn hash(data: &[u8]) -> (u64, u64) {

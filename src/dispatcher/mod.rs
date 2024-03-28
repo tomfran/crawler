@@ -12,7 +12,6 @@ use std::{
 
 const INITIAL_SLEEP_TIME: Duration = Duration::from_millis(500);
 
-#[derive(Default)]
 pub struct Dispatcher {
     sieve: Arc<Mutex<Sieve>>,
     queue: Arc<Mutex<DomainPriorityQueue>>,
@@ -20,6 +19,14 @@ pub struct Dispatcher {
 }
 
 impl Dispatcher {
+    pub fn new(sieve_size: usize) -> Dispatcher {
+        let sieve = Arc::new(Mutex::new(Sieve::new(sieve_size)));
+        let queue = Arc::new(Mutex::new(DomainPriorityQueue::default()));
+        let map = Arc::new(Mutex::new(DomainUrlsMap::default()));
+
+        Dispatcher { sieve, queue, map }
+    }
+
     pub fn add_urls(&self, urls: &[String]) {
         let mut sieve = self.sieve.lock().unwrap();
 

@@ -10,8 +10,8 @@ pub struct Crawler {
 }
 
 impl Crawler {
-    pub fn new(num_workers: usize) -> Crawler {
-        let dispatcher = Arc::new(Dispatcher::default());
+    pub fn new(num_workers: usize, sieve_size: usize) -> Crawler {
+        let dispatcher = Arc::new(Dispatcher::new(sieve_size));
 
         let workers = (0..num_workers)
             .map(|id| Arc::new(Worker::new(id as u32, Arc::clone(&dispatcher))))
