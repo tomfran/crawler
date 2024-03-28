@@ -5,13 +5,16 @@ A web crawler written in Rust.
 
 [![CI](https://github.com/tomfran/crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/tomfran/crawler/actions/workflows/ci.yml)
 
+**Table of Contents**
+- [1. Architecture](#1-architecture)
+  - [1.1 Worker](#11-worker)
+  - [1.2 Dispatcher](#12-dispatcher)
+- [2. Commands](#2-commands)
+- [3. Next steps](#3-next-steps)
 
 ## 1. Architecture
 
-Here is a schema of the crawler architecture, the main components are: **Workers**, **Dispatcher**
-
-![schema-l.png](misc/schema-l.png#gh-light-mode-only)
-![schema-d.png](misc/schema-d.png#gh-dark-mode-only)
+This crawler is made by two main components, the **Workers** and a **Dispatcher**.
 
 The idea is to have multiple workers fetching pages, each one of them parse the HTML content extracting URLs from it, adding them to the Dispatcher. 
 The workers then request another url from the latter component, re-executing this fetch and add loop.
