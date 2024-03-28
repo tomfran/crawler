@@ -6,7 +6,7 @@ A web crawler written in Rust.
 [![CI](https://github.com/tomfran/crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/tomfran/crawler/actions/workflows/ci.yml)
 
 
-## Architecture
+## 1. Architecture
 
 Here is a schema of the crawler architecture, the main components are: **Workers**, **Dispatcher**
 
@@ -16,13 +16,13 @@ Here is a schema of the crawler architecture, the main components are: **Workers
 The idea is to have multiple workers fetching pages, each one of them parse the HTML content extracting URLs from it, adding them to the Dispatcher. 
 The workers then request another url from the latter component, re-executing this fetch and add loop.
 
-### Worker
+### 1.1 Worker
 
 The worker is a simple component in charge of retrieving the webpage content from an url. 
 The main task is to send an HTTP request to a given url, and parse the retrieved page.
 The page is returned as a collection of links, raw content, and a digest computed via simhashing the raw content.
 
-### Dispatcher
+### 1.2 Dispatcher
 
 The dispatcher is the core of the crawler, it is in charge of accepting and returing URLs 
 to visit. It must ensure no websites are visited twice and that no domain 
@@ -52,7 +52,7 @@ The complete workflow to visit a new url is then:
 - enqueue the old head with a new timestamp computed as **old + politeness_delay**;
 - return the retrieved url.
 
-## Commands 
+## 2. Commands 
 
 You can start a new crawl session with the following command: 
 
@@ -66,7 +66,7 @@ E.g.
 
 The seed urls are manually enqueued in the Dispatcher.
 
-## Next steps
+## 3. Next steps
 
 - [ ] Save pages on disk
 - [ ] Discard quasi-duplicated pages via simhashing
