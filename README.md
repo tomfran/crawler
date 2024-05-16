@@ -6,13 +6,13 @@ A web crawler written in Rust.
 [![CI](https://github.com/tomfran/crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/tomfran/crawler/actions/workflows/ci.yml)
 
 **Table of Contents**
-- [1. Architecture](#1-architecture)
+- [1 Architecture](#1-architecture)
   - [1.1 Worker](#11-worker)
   - [1.2 Dispatcher](#12-dispatcher)
-- [2. Commands](#2-commands)
-- [3. Next steps](#3-next-steps)
+- [2 Commands](#2-commands)
+- [3 Next steps](#3-next-steps)
 
-## 1. Architecture
+## 1 Architecture
 
 This crawler is made by two main components, the **Workers** and a **Dispatcher**.
 
@@ -55,21 +55,17 @@ The complete workflow to visit a new url is then:
 - enqueue the old head with a new timestamp computed as **old + politeness_delay**;
 - return the retrieved url.
 
-## 2. Commands 
+## 2 Commands 
 
 You can start a new crawl session with the following command: 
 
 ```
-❯ cargo run --release <num_workers> <bloom_size> <seed_url_1> <seed_url_2> ...
-```
-E.g.
-```
-❯ cargo run --release 10 1000000 http://www.your.cool.website.com/  
+cargo run -- --workers 1 --urls-max-number 10 --seed https://first.com https://second.com
 ```
 
 The seed urls are manually enqueued in the Dispatcher.
 
-## 3. Next steps
+## 3 Next steps
 
 - [ ] Save pages on disk
 - [ ] Discard quasi-duplicated pages via simhashing
